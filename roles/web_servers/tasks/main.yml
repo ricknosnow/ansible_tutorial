@@ -1,20 +1,17 @@
 - name: install apache2 and php packages
-  tags: apache,apache2,ubuntu
-  apt:
+  tags: apache,apache2
+  package:
     name:
-      - apache2
-      - libapache2-mod-php
+      - "{{apache_package_name}}"
+      - "{{php_package_name}}"
     state: latest
-    update_cache: yes
-  when: ansible_distribution in  ["Debian", "Ubuntu"]
 
-- name: start httpd (Ubuntu)
-  tags: apache,apache2,ubuntu
+- name: start and enable apache service
+  tags: apache,apache2
   service:
-    name: apache2
+    name: "{{apache_service}}"
     state: started
     enabled: yes
-  when: ansible_distribution in  ["Debian", "Ubuntu"]
 
 - name: change Max Keep Alive
   tags: apache,ubuntu,httpd
@@ -23,14 +20,14 @@
     regexp: '^MaxKeepAliveRequests'
     line: MaxKeepAliveRequests 200
   when: ansible_distribution in  ["Debian", "Ubuntu"]
-  register: httpd
+  register: apache
 
-- name: restart httpd (Ubuntu)
-  tags: apache,ubuntu,httpd
+- name: restart httpd
+  tags: apache,httpd
   service:
-    name: apache2
+    name: "{{apache_service}}"
     state: restarted
-  when: httpd.changed
+  when: apache.changed
     
 - name: copy default html file for site
   tags: apache,apache2,httpd
