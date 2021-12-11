@@ -1,1 +1,2 @@
+[web_servers]
 10.10.20.165 apache_package=apache2 php_package=libapache2-mod-php
