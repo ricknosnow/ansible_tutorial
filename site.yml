@@ -2,9 +2,9 @@
 
 - hosts: all
   become: true
-  tasks:
+  pre_tasks:
 
-  - name: install updates (Ubuntu_
+  - name: install updates (Ubuntu)
     apt:
       upgrade: dist
       update_cache: yes
@@ -20,3 +20,25 @@
         - "{{ apache_package }}"
         - "{{ php_package }}"
       state: latest
+
+- hosts: db_servers
+  become: true
+  tasks:
+    
+  - name: install mariadb package (Ubuntu)
+    apt:
+      name: 
+        - mariadb-server
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: file_servers
+  become: true
+  tasks:
+    
+  - name: install samba package (Ubuntu)
+    package:
+      name: 
+        - samba
+      state: latest
+    when: ansible_distribution == "Ubuntu"
