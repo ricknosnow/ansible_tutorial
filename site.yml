@@ -5,6 +5,7 @@
   pre_tasks:
 
   - name: install updates (Ubuntu)
+    tags: always
     apt:
       upgrade: dist
       update_cache: yes
@@ -15,17 +16,28 @@
   tasks:
 
   - name: install appache and php package
+    tags: apache,appache2,ubuntu
     apt:
       name: 
         - "{{ apache_package }}"
         - "{{ php_package }}"
       state: latest
 
+  - name: copy default html file for site
+    tags: apache,apache2,httpd
+    copy:
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+
 - hosts: db_servers
   become: true
   tasks:
     
   - name: install mariadb package (Ubuntu)
+    tags: ubuntu,db,mariadb
     apt:
       name: 
         - mariadb-server
@@ -37,6 +49,7 @@
   tasks:
     
   - name: install samba package (Ubuntu)
+    tags: samba
     package:
       name: 
         - samba
